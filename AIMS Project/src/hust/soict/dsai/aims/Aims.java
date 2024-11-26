@@ -1,47 +1,51 @@
-package aims;
-
-import java.util.ArrayList;
-import java.util.List;
+package hust.soict.dsai.aims;
+import hust.soict.dsai.aims.disc.DigitalVideoDisc;
+import hust.soict.dsai.aims.cart.Cart;
 
 public class Aims {
+
     public static void main(String[] args) {
-        // Tạo một số DVD mẫu
-        DVD dvd1 = new DVD(1, "The Matrix", "Action", 19.99, "Wachowski", 120);
-        DVD dvd2 = new DVD(2, "Inception", "Sci-Fi", 15.99, "Nolan", 148);
-        DVD dvd3 = new DVD(3, "Interstellar", "Sci-Fi", 17.99, "Nolan", 169);
+        Cart anOrder = new Cart();
 
-        // Tạo một khách hàng
-        Customer customer = new Customer(101, "John Doe", "johndoe@example.com");
+        // Create some DVDs
+        DigitalVideoDisc dvd1 = new DigitalVideoDisc("The Lion King", "Animation", "Roger Allers", 87, 19.95f);
+        DigitalVideoDisc dvd2 = new DigitalVideoDisc("Star Wars", "Science Fiction", "George Lucas", 87, 24.95f);
+        DigitalVideoDisc dvd3 = new DigitalVideoDisc("Aladdin", "Animation", 18.99f);
 
-        // Thêm DVD vào giỏ hàng của khách hàng
-        customer.addToCart(dvd1);
-        customer.addToCart(dvd2);
-        customer.addToCart(dvd3);
+        // Add individual DVDs to the cart
+        anOrder.addDigitalVideoDisc(dvd1, dvd2);
 
-        // Tính tổng chi phí trong giỏ hàng
-        double totalCost = customer.getCart().calculateTotalCost();
-        System.out.println("Total cost in cart: $" + totalCost);
 
-        // Tạo đơn hàng cho khách hàng
-        List<DVD> orderItems = new ArrayList<>(customer.getCart().getItems());
-        OrderInfo order = new OrderInfo(1001, customer, orderItems, "123 Main St");
-        
-        // Tạo một store manager và phê duyệt đơn hàng
-        StoreManager manager = new StoreManager(201, "Alice");
-        manager.approveOrder(order);
-        
-        // In hóa đơn
-        String invoice = order.generateInvoice();
-        System.out.println(invoice);
+        // Create a DVD array using existing DVDs
+        DigitalVideoDisc[] dvdArray = { dvd1, dvd2, dvd3 };
 
-        // Sử dụng discount
-        Discount discount = new Discount(1, "FixedAmount", 5.0);
-        double discountedTotal = discount.applyPromotion(customer.getCart());
-        System.out.println("Discounted total cost: $" + discountedTotal);
+        // Add multiple DVDs to the cart using an array
+        anOrder.addDigitalVideoDisc(dvdArray);
+                
 
-        // Tạo và xử lý review cho DVD
-        Review review = new Review(301, dvd1, 5, "Excellent movie!");
-        manager.respondToReview(review, "Thank you for your feedback!");
-        System.out.println("Review response: " + review.getResponse());
+        // Display cart contents
+        anOrder.displayCart();
+
+        // Demo of playing a DVD
+        System.out.println("Playing a DVD:");
+        anOrder.play(dvd1);
+
+        // Search for DVDs by title
+        DigitalVideoDisc[] searchResultsByTitle = anOrder.searchByTitle("Star Wars");
+        System.out.println("Search results for 'Star Wars':");
+        for (DigitalVideoDisc disc : searchResultsByTitle) {
+            disc.displayInfo();
+        }
+
+        // Search for DVDs by cost
+        DigitalVideoDisc[] searchResultsByCost = anOrder.searchByCost(20.00f);
+        System.out.println("Search results for DVDs costing less than or equal to $20.00:");
+        for (DigitalVideoDisc disc : searchResultsByCost) {
+            disc.displayInfo();
+        }
+
+        // Remove a DVD and display cart contents again
+        anOrder.removeDigitalVideoDisc(dvd2);
+        anOrder.displayCart();
     }
 }
